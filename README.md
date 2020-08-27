@@ -9,18 +9,18 @@ Yaojie Liu, Joel Stehouwer, Xiaoming Liu
 Tested on Python 3.6 & Tensorflow 1.13.0. As it uses the contrib package, the code should work with Tensorflow >1.8.0 and <1.13.0. The code should be easy to transfer to keras package.
 
 ## Training
-First create a folder ./log/. To run the training code:
+First create a folder "./log/". To run the training code:
 
     python train.py
 
-The face-anti-spoofing databases (e.g. SiW-M, SiW, and Oulu-NPU) have to be applied separately. We provide the required data format and structure in ./data/ folder. The video should pre-processed into frames of cropped face, saved in one folder under either live/ or spoof/. The landmark (68) should be provided in the XXX.npy file.
+The face-anti-spoofing databases (e.g. SiW-M, SiW, and Oulu-NPU) have to be applied separately. We provide the required data format and structure in "./data/" folder. The video should pre-processed into frames of cropped face, saved in one folder under either "live/" or "spoof/". The landmark (68) should be provided in the "XXX.npy" file.
 
 ## Testing
 To run the testing code:
 
     python test.py
 
-It saves the scores in ./log/XXX/test/score.txt file.
+It saves the scores in "./log/XXX/test/score.txt" file.
 
 ## Acknowledge
 Please cite the paper:
