@@ -1,7 +1,8 @@
 # On Disentangling Spoof Traces for Generic Face Anti-Spoofing
 Yaojie Liu, Joel Stehouwer, Xiaoming Liu
 
-[Paper](http://cvlab.cse.msu.edu/pdfs/liu_stehouwer_liu_eccv2020.pdf)
+[[Paper](http://cvlab.cse.msu.edu/pdfs/liu_stehouwer_liu_eccv2020.pdf)]
+[[Project](http://cvlab.cse.msu.edu/project-face-anti.html)]
 
 ![alt text](https://yaojieliu.github.io/images/figure2-1.png)
 
