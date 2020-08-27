@@ -24,7 +24,7 @@ To run the testing code:
 It saves the scores in "./log/XXX/test/score.txt" file.
 
 ## Acknowledge
-Please cite the paper:
+If you find this code useful, please cite the paper:
 
     @inproceedings{eccv20yaojie,
         title={On Disentangling Spoof Traces for Generic Face Anti-Spoofing},
