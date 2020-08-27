@@ -1,7 +1,9 @@
 # On Disentangling Spoof Traces for Generic Face Anti-Spoofing
 Yaojie Liu, Joel Stehouwer, Xiaoming Liu
 
-![alt text](https://yaojieliu.github.io/images/eccv20.png)
+[Paper](http://cvlab.cse.msu.edu/pdfs/liu_stehouwer_liu_eccv2020.pdf)
+
+![alt text](https://yaojieliu.github.io/images/figure2-1.png)
 
 ## Setup
 Tested on Python 3.6 & Tensorflow 1.13.0. As it uses the contrib package, the code should work with Tensorflow >1.8.0 and <1.13.0. The code should be easy to transfer to keras package.
