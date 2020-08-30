@@ -14,7 +14,7 @@ First create a folder "./log/". To run the training code:
 
     python train.py
 
-The face-anti-spoofing databases (e.g. SiW-M, SiW, and Oulu-NPU) have to be applied separately. We provide some data samples to illustrate the data format and structure requirement in "./data/" folder. The video should pre-processed into frames of cropped face, saved in one folder under either "live/" or "spoof/". The landmark (68) should be provided in the "XXX.npy" file.
+The face-anti-spoofing databases (e.g. SiW-M, SiW, and Oulu-NPU) have to be applied separately. We provide the train/test split we used for SiW-M protocol I. We provide some data samples to illustrate the data format and structure requirement in "./data/" folder. The video should pre-processed into frames of cropped face, saved in one folder under either "live/" or "spoof/". The landmark (68) should be provided in the "XXX.npy" file.
 
 ## Testing
 To run the testing code:
