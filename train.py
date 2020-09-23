@@ -75,7 +75,7 @@ def _step(config, data_batch, training_nn):
   _, d3_rs, _, d3_ss = tf.split(d3s, 4)
   # loss for step 1.
   M_li, M_sp = tf.split(M, 2, 0)
-  esr_loss = l1_loss(M_li,1) + l1_loss(M_sp,-1)
+  esr_loss = l1_loss(M_li,-1) + l1_loss(M_sp,1)
   gan_loss = l2_loss(d1_sl,1) + l2_loss(d2_sl,1) + l2_loss(d3_sl,1) +\
              l2_loss(d1_ss,1) + l2_loss(d2_ss,1) + l2_loss(d3_ss,1)
   reg_loss_li = l2_loss(s[:bsize,...],0) + l2_loss(b[:bsize,...],0) + l2_loss(C[:bsize,...],0) + l2_loss(T[:bsize,...],0)
@@ -90,7 +90,7 @@ def _step(config, data_batch, training_nn):
            l2_loss(d1_ss,0) + l2_loss(d2_ss,0) + l2_loss(d3_ss,0)) / 4
 
   # loss for step3.
-  esr_loss_a = l1_loss(M_a,-1)
+  esr_loss_a = l1_loss(M_a,1)
   pixel_loss = l1_loss(traces_a[:bsize,...], tf.stop_gradient(trace_warp))
   a_loss = esr_loss_a*5 + pixel_loss*0.1
   
