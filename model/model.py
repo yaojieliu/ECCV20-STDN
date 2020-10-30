@@ -62,6 +62,25 @@ def Disc(x, training_nn, scope):
   nlayers = [16, 32, 64, 96, ]
   x  = tf.concat([x,tf.image.rgb_to_yuv(x)], axis=3)
   # Block 1
+  #x1 = Conv(x, nlayers[1], scope+'/conv1', training_nn)
+  x1 = Downsample(x, nlayers[1], scope+'/conv2', training_nn)
+  # Block 2
+  #x2 = Conv(x1, nlayers[2], scope+'/conv3', training_nn)
+  x2 = Downsample(x1, nlayers[2], scope+'/conv4', training_nn)
+  # Block 3
+  #x3 = Conv(x2, nlayers[2], scope+'/conv5', training_nn)
+  x3 = Downsample(x2, nlayers[3], scope+'/conv6', training_nn)
+  # Block 4
+  x4 = Conv(x3, nlayers[3], scope+'/conv7', training_nn)
+  x4l = Conv(x4, 1, scope+'/conv8', training_nn, act=False, norm=False) 
+  x4s = Conv(x4, 1, scope+'/conv9', training_nn, act=False, norm=False) 
+
+  return x4l, x4s
+
+def Disc_l(x, training_nn, scope):
+  nlayers = [16, 32, 64, 96, ]
+  x  = tf.concat([x,tf.image.rgb_to_yuv(x)], axis=3)
+  # Block 1
   x1 = Conv(x, nlayers[1], scope+'/conv1', training_nn)
   x1 = Downsample(x1, nlayers[1], scope+'/conv2', training_nn)
   # Block 2
