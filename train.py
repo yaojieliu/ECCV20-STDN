@@ -62,8 +62,22 @@ def _step(config, data_batch, training_nn):
   d3l, d3s = Disc(img_d3, training_nn=training_nn, scope='Disc/d3')
 
   ################################### STEP 3 ##################################################################
-  img_a = tf.stop_gradient(tf.concat([synth1, recon1[bsize:,...]],axis=0))
-  M_a, s_a, b_a, C_a, T_a = Gen(img_a, training_nn=False, scope='STDN')
+  s_hard = s * tf.random.uniform([bsize*2, 1, 1, 1], minval=0.1, maxval=0.8)
+  b_hard = b * tf.random.uniform([bsize*2, 1, 1, 1], minval=0.1, maxval=0.8)
+  C_hard = C * tf.random.uniform([bsize*2, 1, 1, 1], minval=0.1, maxval=0.8)
+  T_hard = T * tf.random.uniform([bsize*2, 1, 1, 1], minval=0.1, maxval=0.8)
+  recon_hard1 = (1-s_hard)*img - b - tf.image.resize_images(C, [imsize, imsize]) - T
+  recon_hard2 = (1-s)*img - b_hard - tf.image.resize_images(C, [imsize, imsize]) - T
+  recon_hard3 = (1-s)*img - b - tf.image.resize_images(C_hard, [imsize, imsize]) - T
+  recon_hard4 = (1-s)*img - b - tf.image.resize_images(C, [imsize, imsize]) - T_hard
+  recon_hard_s1 = tf.cond(tf.greater(tf.random.uniform([1],0,1)[0],0.5),lambda: recon_hard1, lambda: recon_hard2)
+  recon_hard_s2 = tf.cond(tf.greater(tf.random.uniform([1],0,1)[0],0.5),lambda: recon_hard3, lambda: recon_hard4)
+  recon_hard = tf.cond(tf.greater(tf.random.uniform([1],0,1)[0],0.5),lambda: recon_hard_s1, lambda: recon_hard_s2)
+  img_a1 = tf.stop_gradient(tf.concat([img[:bsize,...], recon_hard[bsize:,...]],axis=0))
+  img_a2 = tf.stop_gradient(tf.concat([img[:bsize,...], synth1],axis=0))
+  dec = tf.greater(tf.random.uniform([1],0,1)[0],0.5)
+  img_a = tf.cond(dec,lambda: img_a1, lambda: img_a2)
+  M_a, s_a, b_a, C_a, T_a = Gen(img_a, training_nn=training_nn, scope='STDN')
   traces_a = s_a*img + b_a + tf.image.resize_images(C_a, [imsize, imsize]) + T_a
 
   ################################### Losses ##################################################################
@@ -90,9 +104,11 @@ def _step(config, data_batch, training_nn):
            l2_loss(d1_ss,0) + l2_loss(d2_ss,0) + l2_loss(d3_ss,0)) / 4
 
   # loss for step3.
-  esr_loss_a = l1_loss(M_a,1)
+  esr_loss_a = l1_loss(M_a[:bsize,...],-1) + l1_loss(M_a[bsize:,...],1)
   pixel_loss = l1_loss(traces_a[:bsize,...], tf.stop_gradient(trace_warp))
-  a_loss = esr_loss_a*5 + pixel_loss*0.1
+  a_loss_1 = esr_loss_a + pixel_loss*0.0 #
+  a_loss_2 = esr_loss_a + pixel_loss*0.1 #
+  a_loss = tf.cond(dec,lambda: a_loss_1, lambda: a_loss_2)
   
   if training_nn:
     g_op = get_train_op(g_loss+a_loss, global_step, config, "STDN")
