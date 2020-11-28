@@ -21,7 +21,7 @@ import cv2
 import time
 from model.dataset import Dataset
 from model.config  import Config
-from model.model   import Gen, Disc, get_train_op
+from model.model   import Gen, Disc, Disc_s, get_train_op
 from model.utils   import Error, plotResults
 from model.loss    import l1_loss, l2_loss
 from model.warp    import warping
@@ -49,17 +49,17 @@ def _step(config, data_batch, training_nn):
   trace_warp = warping(trace[bsize:,...], reg, imsize)
   synth1 = img[:bsize,...]+ trace_warp
   img_d1 = tf.concat([img, recon1[bsize:,...], synth1], 0)
-  d1l, d1s = Disc(img_d1, training_nn=training_nn, scope='Disc/d1')
+  d1l, d1s = Disc_s(img_d1, training_nn=training_nn, scope='Disc/d1')
 
   recon2 = tf.image.resize_images(recon1, [im2size, im2size])
   synth2 = tf.image.resize_images(synth1, [im2size, im2size])
   img_d2 = tf.concat([img2, recon2[bsize:,...], synth2], 0)
-  d2l, d2s = Disc(img_d2, training_nn=training_nn, scope='Disc/d2')
+  d2l, d2s = Disc_s(img_d2, training_nn=training_nn, scope='Disc/d2')
 
   recon3 = tf.image.resize_images(recon1, [im3size, im3size])
   synth3 = tf.image.resize_images(synth1, [im3size, im3size])
   img_d3 = tf.concat([img3, recon3[bsize:,...], synth3], 0)
-  d3l, d3s = Disc(img_d3, training_nn=training_nn, scope='Disc/d3')
+  d3l, d3s = Disc_s(img_d3, training_nn=training_nn, scope='Disc/d3')
 
   ################################### STEP 3 ##################################################################
   s_hard = s * tf.random.uniform([bsize*2, 1, 1, 1], minval=0.1, maxval=0.8)
@@ -106,8 +106,8 @@ def _step(config, data_batch, training_nn):
   # loss for step3.
   esr_loss_a = l1_loss(M_a[:bsize,...],-1) + l1_loss(M_a[bsize:,...],1)
   pixel_loss = l1_loss(traces_a[:bsize,...], tf.stop_gradient(trace_warp))
-  a_loss_1 = esr_loss_a + pixel_loss*0.0 #
-  a_loss_2 = esr_loss_a + pixel_loss*0.1 #
+  a_loss_1 = esr_loss_a*5 + pixel_loss*0.0 #  #
+  a_loss_2 = esr_loss_a*5 + pixel_loss*0.1 #  #
   a_loss = tf.cond(dec,lambda: a_loss_1, lambda: a_loss_2)
   
   if training_nn:
@@ -119,7 +119,7 @@ def _step(config, data_batch, training_nn):
 
   # log info
   losses = [g_loss, d_loss, a_loss]
-  fig = [img, (M+1)/2, s*5, b*5, C*5, T*5, img_a]
+  fig = [img, (M+1)/2, s*5, b*5, C*5, T*5, recon1, img_a]
   fig = plotResults(fig)
 
   return losses, g_op, d_op, fig
