@@ -18,7 +18,7 @@ import tensorflow as tf
 from model.utils import Conv, Upsample, Downsample
   
 def Gen(x, training_nn, scope):
-  nlayers = [16, 64, 96, 96, ]
+  nlayers = [16, 64, 64, 96, ]
 
   x  = tf.concat([x,tf.image.rgb_to_yuv(x)], axis=3)
   x0 = Conv(x,  nlayers[1], scope+'/conv0', training_nn)
@@ -58,7 +58,7 @@ def Gen(x, training_nn, scope):
 
   return x5, s, b, C, T
 
-def Disc(x, training_nn, scope):
+def Disc_s(x, training_nn, scope):
   nlayers = [16, 32, 64, 96, ]
   x  = tf.concat([x,tf.image.rgb_to_yuv(x)], axis=3)
   # Block 1
@@ -77,7 +77,7 @@ def Disc(x, training_nn, scope):
 
   return x4l, x4s
 
-def Disc_l(x, training_nn, scope):
+def Disc(x, training_nn, scope):
   nlayers = [16, 32, 64, 96, ]
   x  = tf.concat([x,tf.image.rgb_to_yuv(x)], axis=3)
   # Block 1
